@@ -35,3 +35,23 @@ class Ad(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+
+class ExchangeProposal(models.Model):
+    """
+    Модель для обмена вещами.
+    """
+    class Status(models.TextChoices):
+        WAIT = "Ожидает"
+        ACCEPT = "Принято"
+        REJECT = "Отклонено"
+
+
+    ad_sender = models.ForeignKey(
+        Ad, on_delete=models.CASCADE, related_name="sender"
+    )
+    ad_receiver = models.ForeignKey(
+        Ad, on_delete=models.CASCADE, related_name="receiver"
+    )
+    comment = models.TextField()
+    status = models.CharField(max_length=20, choices=Status, default=Status.WAIT)
+    created_at = models.DateTimeField(auto_now_add=True)

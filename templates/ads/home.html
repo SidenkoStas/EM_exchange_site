@@ -3,17 +3,28 @@
 {% block title %}Главная страница{% endblock %}
 
 {% block content %}
-    <h1>Добро пожаловать на главную страницу!</h1>
-    {% for ad in ads %}
-      <div>
-        <p>{{ ad.user }}</p>
-        <p>{{ ad.category }}</p>
-        <p>{{ ad.title }}</p>
-        <p>{{ ad.description }}</p>
-        <p>{{ ad.condition }}</p>
-        <p>{{ ad.created_at }}</p>
-      </div>
-      <hr>
-    {% endfor %}
+  <hr>
+  <div>
+  Фильтры по категориям:
+  {% for cat in category %}
+    <a href="{% url 'ads:filter' cat %}">{{ cat.title }}</a>
+  {% endfor %}
+  Фильтры по состонию:
+  {% for cond in condition %}
+    <a href="{% url 'ads:filter' cond.name %}">{{ cond }}</a>
+  {% endfor %}
+  </div>
+  <h1>Добро пожаловать на главную страницу!</h1>
+  {% for ad in ads %}
+    <div>
+      <p>{{ ad.user }}</p>
+      <p>{{ ad.category }}</p>
+      <p>{{ ad.title }}</p>
+      <p>{{ ad.description }}</p>
+      <p>{{ ad.condition }}</p>
+      <p>{{ ad.created_at }}</p>
+    </div>
+    <hr>
+  {% endfor %}
 {% include "paginatot.html" %}
 {% endblock %}

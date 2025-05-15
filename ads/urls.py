@@ -10,8 +10,9 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
     path("profile/", views.ProfileView.as_view(), name="profile"),
     path("profile/create/", views.AdCreateView.as_view(), name="create"),
-    path("profile/detail/<int:pk>", views.AdDetailView.as_view(), name="detail"),
-    path("profile/update/<int:pk>", views.AdUpdateView.as_view(), name="update"),
-    path("profile/delete/<int:pk>", views.delete_ad, name="delete"),
+    path("profile/detail/<int:pk>/", views.AdDetailView.as_view(), name="detail"),
+    path("profile/update/<int:pk>/", views.AdUpdateView.as_view(), name="update"),
+    path("profile/delete/<int:pk>/", views.delete_ad, name="delete"),
+    path("<str:filter>/", views.AdListByFilter.as_view(), name="filter"),
 
 ]
