@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль{% endblock title %}
+
+{% block content %}
+  <div>
+    <a href="{% url "ads:create" %}">Выложить товар</a>
+  </div>
+  <hr>
+  {% for ad in ads %}
+    <div>
+      <p>{{ ad.user }}</p>
+      <p>{{ ad.category }}</p>
+      <p><a href="{{ ad.get_absolute_url }}">{{ ad.title }}</a></p>
+      <p>{{ ad.description }}</p>
+      <p>{{ ad.condition }}</p>
+      <p>{{ ad.created_at }}</p>
+    </div>
+    <hr>
+  {% endfor %}
+
+{% include "paginatot.html" %}
+{% endblock content %}

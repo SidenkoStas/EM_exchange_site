@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Создать карточку товара{% endblock title %}
+
+{% block content %}
+  <form action="{% url "ads:create" %}" method="post">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <button type="submit">Создать</button>
+  </form>
+{% endblock content %}

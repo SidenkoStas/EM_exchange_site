@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}{{ ad }}{% endblock title %}
+
+{% block content %}
+  <hr>
+  <div>
+    <p>{{ ad.category }}</p>
+    <p>{{ ad.title }}</p>
+    <p>{{ ad.description }}</p>
+    <p>{{ ad.condition }}</p>
+    <p>{{ ad.created_at }}</p>
+  </div>
+  <a href="{% url "ads:update" ad.pk %}">Редактировать товар</a>
+  <a href="{% url "ads:delete" ad.pk %}">Удалить товар</a>
+{% endblock content %}

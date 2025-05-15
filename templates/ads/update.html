@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование {{ ad }}{% endblock title %}
+
+{% block content %}
+  <form action="{% url "ads:create" %}" method="post">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <button type="submit">Обновить</button>
+  </form>
+{% endblock content %}
