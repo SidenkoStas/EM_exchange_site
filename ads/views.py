@@ -17,8 +17,23 @@ class HomeView(ListView):
         context = super().get_context_data()
         context["category"] = Category.objects.all()
         context["condition"] = Ad.Condition
-        # context["condition"] = ((c.label, c.value) for c in Ad.Condition)
+        context["filtering"] = self.kwargs.get("filtering")
         return context
+
+    def get_queryset(self):
+        if self.kwargs.get("filtering"):
+            filter_name = self.kwargs["filtering"]
+            try:
+                filter_name = Ad.Condition[filter_name] or filter_name
+            except:
+                pass
+            queryset = Ad.objects.filter(
+                Q(category__title=filter_name) |
+                Q(condition=filter_name)
+            )
+        else:
+            queryset = super().get_queryset()
+        return queryset
 
 class ProfileView(LoginRequiredMixin, ListView):
     template_name = "ads/profile.html"
@@ -70,24 +85,24 @@ def delete_ad(request, pk):
         request, "ads/delete.html", {"title": ad.title}
     )
 
-class AdListByFilter(ListView):
-    template_name = "ads/home.html"
-    context_object_name = "ads"
-
-    def get_queryset(self):
-        filter_name = self.kwargs["filter"]
-        try:
-            filter_name = Ad.Condition[filter_name] or filter_name
-        except:
-            pass
-        queryset = Ad.objects.filter(
-            Q(category__title=filter_name) |
-            Q(condition=filter_name)
-        )
-        return queryset
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data()
-        context["category"] = Category.objects.all()
-        context["condition"] = Ad.Condition
-        return context
+# class AdListByFilter(ListView):
+#     template_name = "ads/home.html"
+#     context_object_name = "ads"
+#
+#     def get_queryset(self):
+#         filter_name = self.kwargs["filter"]
+#         try:
+#             filter_name = Ad.Condition[filter_name] or filter_name
+#         except:
+#             pass
+#         queryset = Ad.objects.filter(
+#             Q(category__title=filter_name) |
+#             Q(condition=filter_name)
+#         )
+#         return queryset
+#
+#     def get_context_data(self, *args, **kwargs):
+#         context = super().get_context_data()
+#         context["category"] = Category.objects.all()
+#         context["condition"] = Ad.Condition
+#         return context

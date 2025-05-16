@@ -13,6 +13,6 @@ urlpatterns = [
     path("profile/detail/<int:pk>/", views.AdDetailView.as_view(), name="detail"),
     path("profile/update/<int:pk>/", views.AdUpdateView.as_view(), name="update"),
     path("profile/delete/<int:pk>/", views.delete_ad, name="delete"),
-    path("<str:filter>/", views.AdListByFilter.as_view(), name="filter"),
+    path("<str:filtering>/", views.HomeView.as_view(), name="filtering"),
 
 ]

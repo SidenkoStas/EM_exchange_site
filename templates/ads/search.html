@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Поиск{% endblock %}
+
+{% block content %}
+  <hr>
+  <h1>Поиск</h1>
+
+  {% for ad in ads %}
+    <div>
+      <p>{{ ad.user }}</p>
+      <p>{{ ad.category }}</p>
+      <p>{{ ad.title }}</p>
+      <p>{{ ad.description }}</p>
+      <p>{{ ad.condition }}</p>
+      <p>{{ ad.created_at }}</p>
+    </div>
+    <hr>
+  {% endfor %}
+{% include "paginatot.html" %}
+{% endblock %}

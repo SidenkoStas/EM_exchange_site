@@ -7,14 +7,18 @@
   <div>
   Фильтры по категориям:
   {% for cat in category %}
-    <a href="{% url 'ads:filter' cat %}">{{ cat.title }}</a>
+    <a href="{% url 'ads:filtering' cat %}">{{ cat.title }}</a>
   {% endfor %}
   Фильтры по состонию:
   {% for cond in condition %}
-    <a href="{% url 'ads:filter' cond.name %}">{{ cond }}</a>
+    <a href="{% url 'ads:filtering' cond.name %}">{{ cond }}</a>
   {% endfor %}
   </div>
-  <h1>Добро пожаловать на главную страницу!</h1>
+  {% if filtering %}
+    <h1>Фильтр по {{ filtering }}</h1>
+  {% else %}
+    <h1>Добро пожаловать на главную страницу!</h1>
+  {% endif %}
   {% for ad in ads %}
     <div>
       <p>{{ ad.user }}</p>
