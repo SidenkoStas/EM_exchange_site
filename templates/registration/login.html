@@ -3,7 +3,7 @@
 {% block title %}Вход для пользователей{% endblock title %}
 
 {% block content %}
-  <form action="{% url "ads:login" %}" method="post">
+  <form action="{% url "login" %}" method="post">
     {{ form.as_p }}
   {% csrf_token %}
     <button type="submit">Войти</button>

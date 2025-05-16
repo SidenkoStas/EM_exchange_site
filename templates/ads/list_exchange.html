@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Список обменов{% endblock %}
+
+{% block content %}
+  <hr>
+  {% for ad in ads %}
+    <div>
+      <p>Запрос от: {{ ad.ad_sender }}</p>
+      <p>Запрос на: {{ ad.ad_receiver }}</p>
+      <p>Комментарий: {{ ad.comment }}</p>
+      <p>Статус: {{ ad.status }}</p>
+      <p>Дата создания: {{ ad.created_at }}</p>
+    </div>
+    <hr>
+  {% endfor %}
+{% endblock %}

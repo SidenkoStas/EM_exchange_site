@@ -11,10 +11,14 @@
     <p>{{ ad.condition }}</p>
     <p>{{ ad.created_at }}</p>
   </div>
-  {% if user == ad.user %}
-    <a href="{% url "ads:update" ad.pk %}">Редактировать товар</a>
-    <a href="{% url "ads:delete" ad.pk %}">Удалить товар</a>
-  {% else %}
-    <a href="{% url "ads:exchange" ad.pk %}">Обменять товар</a>
-  {% endif %}
+  <hr>
+  <div>
+    <form action="{% url 'ads:exchange' ad.pk %}" method="post">
+      {{ form.as_p }}
+      {% csrf_token %}
+      <button>
+        Отправить запрос
+      </button>
+    </form>
+  </div>
 {% endblock content %}

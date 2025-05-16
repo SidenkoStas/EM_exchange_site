@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
-from .models import Ad, Category
-from .forms import CreateAdForm
+from .models import Ad, Category, ExchangeProposal
+from .forms import CreateAdForm, ExchangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.db.models.functions import Lower
 
 class HomeView(ListView):
     template_name = "ads/home.html"
@@ -17,14 +18,18 @@ class HomeView(ListView):
         context = super().get_context_data()
         context["category"] = Category.objects.all()
         context["condition"] = Ad.Condition
-        context["filtering"] = self.kwargs.get("filtering")
+        filtering = self.kwargs.get("filtering")
+        if filtering in Ad.Condition:
+            context["filtering"] = Ad.Condition[filtering].label
+        else:
+            context["filtering"] = filtering
         return context
 
     def get_queryset(self):
         if self.kwargs.get("filtering"):
             filter_name = self.kwargs["filtering"]
             try:
-                filter_name = Ad.Condition[filter_name] or filter_name
+                filter_name = Ad.Condition[filter_name].label
             except:
                 pass
             queryset = Ad.objects.filter(
@@ -54,16 +59,10 @@ class AdCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class AdDetailView(LoginRequiredMixin, DetailView):
+class AdDetailView(DetailView):
     queryset = Ad.objects.all()
     template_name = "ads/detail.html"
     context_object_name = "ad"
-
-    def get_object(self, queryset=None):
-        obj = super().get_object()
-        if obj.user != self.request.user:
-            raise PermissionDenied
-        return obj
 
 class AdUpdateView(LoginRequiredMixin, UpdateView):
     queryset = Ad.objects.all()
@@ -85,24 +84,48 @@ def delete_ad(request, pk):
         request, "ads/delete.html", {"title": ad.title}
     )
 
-# class AdListByFilter(ListView):
-#     template_name = "ads/home.html"
-#     context_object_name = "ads"
-#
-#     def get_queryset(self):
-#         filter_name = self.kwargs["filter"]
-#         try:
-#             filter_name = Ad.Condition[filter_name] or filter_name
-#         except:
-#             pass
-#         queryset = Ad.objects.filter(
-#             Q(category__title=filter_name) |
-#             Q(condition=filter_name)
-#         )
-#         return queryset
-#
-#     def get_context_data(self, *args, **kwargs):
-#         context = super().get_context_data()
-#         context["category"] = Category.objects.all()
-#         context["condition"] = Ad.Condition
-#         return context
+class SearchingView(ListView):
+    template_name = "ads/searching.html"
+    context_object_name = "ads"
+    paginate_by = 10
+    ordering = ["-created_at"]
+
+    def get_queryset(self):
+        searching = self.request.GET.get("searching")
+        queryset = Ad.objects.annotate(
+            lower_title = Lower("title"),
+            lower_description = Lower("description")
+        ).filter(
+            Q(lower_title__icontains=searching.lower()) |
+            Q(lower_description__icontains=searching.lower())
+        )
+        return queryset
+
+def exchange_view(request, pk):
+    ad = Ad.objects.get(pk=pk)
+    user = request.user
+    if request.method == "POST":
+        form = ExchangeForm(request.POST, user=user)
+        if form.is_valid():
+            exchange = form.save(commit=False)
+            exchange.ad_receiver = ad
+            exchange.save()
+            return render(request, "ads/exchange_success.html")
+    else:
+        form = ExchangeForm(user=user)
+    return render(
+        request, "ads/exchange.html",
+        {"form": form, "ad": ad}
+    )
+
+class ExchangeListView(ListView):
+    template_name = "ads/list_exchange.html"
+    context_object_name = "ads"
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = ExchangeProposal.objects.filter(
+            Q(ad_sender__user=user) |
+            Q(ad_receiver__user=user)
+        )
+        return queryset

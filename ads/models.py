@@ -16,8 +16,8 @@ class Ad(models.Model):
     Модель товаров.
     """
     class Condition(models.TextChoices):
-        NEW = "Новый"
-        USED = "Б/У"
+        NEW = "NEW", "Новый"
+        USED = "USED", "Б/У"
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     title = models.CharField(max_length=150)
@@ -41,13 +41,13 @@ class ExchangeProposal(models.Model):
     Модель для обмена вещами.
     """
     class Status(models.TextChoices):
-        WAIT = "Ожидает"
-        ACCEPT = "Принято"
-        REJECT = "Отклонено"
+        WAIT = "WAIT", "Ожидает"
+        ACCEPT = "ACCEPT", "Принято"
+        REJECT = "REJECT", "Отклонено"
 
 
     ad_sender = models.ForeignKey(
-        Ad, on_delete=models.CASCADE, related_name="sender"
+        Ad, on_delete=models.CASCADE, related_name="sender", verbose_name="Отправитель"
     )
     ad_receiver = models.ForeignKey(
         Ad, on_delete=models.CASCADE, related_name="receiver"

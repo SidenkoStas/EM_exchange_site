@@ -4,6 +4,9 @@
 
 {% block content %}
   <hr>
+  <form action="{% url 'ads:searching' %}" method="get">
+    <input name="searching" type="text" placeholder="Поиск">
+  </form>
   <div>
   Фильтры по категориям:
   {% for cat in category %}
@@ -11,7 +14,7 @@
   {% endfor %}
   Фильтры по состонию:
   {% for cond in condition %}
-    <a href="{% url 'ads:filtering' cond.name %}">{{ cond }}</a>
+    <a href="{% url 'ads:filtering' cond %}">{{ cond.label }}</a>
   {% endfor %}
   </div>
   {% if filtering %}
@@ -23,7 +26,7 @@
     <div>
       <p>{{ ad.user }}</p>
       <p>{{ ad.category }}</p>
-      <p>{{ ad.title }}</p>
+      <p><a href="{{ ad.get_absolute_url }}">{{ ad.title }}</a></p>
       <p>{{ ad.description }}</p>
       <p>{{ ad.condition }}</p>
       <p>{{ ad.created_at }}</p>

@@ -10,7 +10,7 @@
     <div>
       <p>{{ ad.user }}</p>
       <p>{{ ad.category }}</p>
-      <p>{{ ad.title }}</p>
+      <p><a href="{{ ad.get_absolute_url }}">{{ ad.title }}</a></p>
       <p>{{ ad.description }}</p>
       <p>{{ ad.condition }}</p>
       <p>{{ ad.created_at }}</p>
