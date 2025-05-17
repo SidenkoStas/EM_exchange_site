@@ -4,6 +4,14 @@
 
 {% block content %}
   <hr>
+   Фильтры по статусу:
+  {% for stat in status %}
+    <a href="{% url 'ads:ex_filter' stat %}">{{ stat.label }}</a>
+  {% endfor %}
+  |
+    <a href="{% url 'ads:ex_filter' "sender" %}">Мои запросы</a>
+    <a href="{% url 'ads:ex_filter' "receiver" %}">Запросы ко мне</a>
+  <hr>
   {% for ad in ads %}
     <div>
       <p>Запрос от: {{ ad.ad_sender }}</p>
@@ -14,4 +22,5 @@
     </div>
     <hr>
   {% endfor %}
+{% include "paginatot.html" %}
 {% endblock %}

@@ -12,7 +12,7 @@ class HomeView(ListView):
     queryset = Ad.objects.all()
     context_object_name = "ads"
     paginate_by = 10
-    ordering = ["-created_at"]
+    ordering = ("-created_at",)
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data()
@@ -88,7 +88,7 @@ class SearchingView(ListView):
     template_name = "ads/searching.html"
     context_object_name = "ads"
     paginate_by = 10
-    ordering = ["-created_at"]
+    ordering = ("-created_at",)
 
     def get_queryset(self):
         searching = self.request.GET.get("searching")
@@ -121,11 +121,34 @@ def exchange_view(request, pk):
 class ExchangeListView(ListView):
     template_name = "ads/list_exchange.html"
     context_object_name = "ads"
+    paginate_by = 10
+    ordering = ("-created_at", )
 
     def get_queryset(self):
         user = self.request.user
-        queryset = ExchangeProposal.objects.filter(
-            Q(ad_sender__user=user) |
-            Q(ad_receiver__user=user)
-        )
+        filt = self.kwargs.get("ex_filter")
+        if filt:
+            if filt == "sender":
+                queryset = ExchangeProposal.objects.filter(
+                    ad_sender__user=user
+                )
+            elif filt == "receiver":
+                queryset = ExchangeProposal.objects.filter(
+                    ad_receiver__user=user
+                )
+            else:
+                queryset = ExchangeProposal.objects.filter(
+                    Q(ad_sender__user=user) |
+                    Q(ad_receiver__user=user)
+                ).filter(status=filt)
+        else:
+            queryset = ExchangeProposal.objects.filter(
+                Q(ad_sender__user=user) |
+                Q(ad_receiver__user=user)
+            )
         return queryset
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data()
+        context["status"] = ExchangeProposal.Status
+        return  context

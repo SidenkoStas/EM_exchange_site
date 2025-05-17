@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Сторонние
+    "rest_framework",
     # Свои приложения
     "ads.apps.AdsConfig",
 ]

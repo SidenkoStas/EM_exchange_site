@@ -22,5 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
-    path("", include("ads.urls", namespace="ads"))
+    path("", include("ads.urls", namespace="ads")),
+    path('api-auth/', include('rest_framework.urls')),
+    path('api/', include('ads.api_urls')),
 ]
