@@ -60,19 +60,18 @@ class AdsViewsTests(TestCase):
         self.assertEqual(response.context['ad'], self.ad)
 
     def test_ad_update_view_permission(self):
-        url = reverse('ads:update', kwargs={'pk': self.ad.pk})  # замените на актуальное имя URL
+        url = reverse('ads:update', kwargs={'pk': self.ad.pk})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)  # редирект на логин
+        self.assertEqual(response.status_code, 302)
 
         self.client.login(username='testuser', password='testpass')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_ad_view_permission(self):
-        url = reverse('ads:delete', kwargs={'pk': self.ad.pk})  # замените на актуальное имя URL
+        url = reverse('ads:delete', kwargs={'pk': self.ad.pk})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, 200)  # редирект на логин
-
+        self.assertEqual(response.status_code, 200)
         self.client.login(username='testuser', password='testpass')
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
@@ -82,19 +81,6 @@ class AdsViewsTests(TestCase):
         response = self.client.get(url, {'searching': 'Test'})
         self.assertEqual(response.status_code, 200)
         self.assertIn('ads', response.context)
-
-    # def test_exchange_view(self):
-    #     url = reverse('exchange', kwargs={'pk': self.ad.pk})  # замените на актуальное имя URL
-    #     self.client.login(username='testuser', password='testpass')
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, 200)
-    #
-    #     response = self.client.post(url, {
-    #         # поля формы ExchangeForm, например:
-    #         # 'field_name': 'value',
-    #     })
-    #     # Проверяйте статус и поведение в зависимости от формы
-    #     self.assertIn(response.status_code, [200, 302])
 
     def test_exchange_list_view(self):
         url = reverse('ads:list_ex')
