@@ -8,6 +8,9 @@ from django.db.models import Q
 from django.db.models.functions import Lower
 
 class HomeView(ListView):
+    """
+    Отображение списка объявлений с возможностью фильтрации.
+    """
     template_name = "ads/home.html"
     queryset = Ad.objects.all()
     context_object_name = "ads"
@@ -30,7 +33,7 @@ class HomeView(ListView):
             filter_name = self.kwargs["filtering"]
             try:
                 filter_name = Ad.Condition[filter_name].label
-            except:
+            except KeyError:
                 pass
             queryset = Ad.objects.filter(
                 Q(category__title=filter_name) |
@@ -41,6 +44,9 @@ class HomeView(ListView):
         return queryset
 
 class ProfileView(LoginRequiredMixin, ListView):
+    """
+    Отображение всех объявлений пользователя.
+    """
     template_name = "ads/profile.html"
     context_object_name = "ads"
     paginate_by = 10
@@ -52,6 +58,9 @@ class ProfileView(LoginRequiredMixin, ListView):
         return queryset
 
 class AdCreateView(LoginRequiredMixin, CreateView):
+    """
+    Создание объявления.
+    """
     template_name = "ads/create.html"
     form_class = CreateAdForm
 
@@ -60,11 +69,17 @@ class AdCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 class AdDetailView(DetailView):
+    """
+    Просмотр объявления отдельно.
+    """
     queryset = Ad.objects.all()
     template_name = "ads/detail.html"
     context_object_name = "ad"
 
 class AdUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    Обновление объявления.
+    """
     queryset = Ad.objects.all()
     template_name = "ads/update.html"
     form_class = CreateAdForm
@@ -76,6 +91,9 @@ class AdUpdateView(LoginRequiredMixin, UpdateView):
         return obj
 
 def delete_ad(request, pk):
+    """
+    Уцдаление объявления.
+    """
     ad = get_object_or_404(Ad, pk=pk)
     if request.user != ad.user:
         return render(request, "403.html")
@@ -85,6 +103,10 @@ def delete_ad(request, pk):
     )
 
 class SearchingView(ListView):
+    """
+    Поиск по заголовку и в названии.
+    Выдаёт список объявлений.
+    """
     template_name = "ads/searching.html"
     context_object_name = "ads"
     paginate_by = 10
@@ -102,6 +124,9 @@ class SearchingView(ListView):
         return queryset
 
 def exchange_view(request, pk):
+    """
+    Создание запроса на обмен.
+    """
     ad = Ad.objects.get(pk=pk)
     user = request.user
     if request.method == "POST":
@@ -119,6 +144,9 @@ def exchange_view(request, pk):
     )
 
 class ExchangeListView(ListView):
+    """
+    Список всех запросов на обмен.
+    """
     template_name = "ads/list_exchange.html"
     context_object_name = "ads"
     paginate_by = 10
